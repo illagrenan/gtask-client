@@ -1,127 +1,139 @@
-/*global angular */
+/*global todomvc, angular */
+'use strict';
 
 /**
  * The main controller for the app. The controller:
  * - retrieves and persists the model via the todoStorage service
  * - exposes the model to the template and provides event handlers
  */
-angular.module('todomvc')
-    .controller('TodoCtrl', function TodoCtrl($scope, $routeParams, $filter, store) {
-        'use strict';
+app.controller('TodoCtrl', function TodoCtrl($scope, $location, $filter, todoStorage, GooglePlus, $window) {
+    var todos = $scope.todos = [];
 
-        var todos = $scope.todos = store.todos;
+    $scope.$on("google:ready", function () {
+        GooglePlus.checkAuth().then(function (authResult) {
+            gapi.client.load('tasks', 'v1', function () {
+                var request = gapi.client.tasks.tasks.list({'tasklist': '@default'});
+                request.execute(function (resp) {
+                        $scope.todos = resp.items;
+                        $scope.$apply();
+                    }
+                )
+            });
+        })
+    })
 
-        $scope.newTodo = '';
-        $scope.editedTodo = null;
+    $scope.login = function () {
+        GooglePlus.login().then(function (authResult) {
+            console.log(authResult);
 
-        $scope.$watch('todos', function () {
-            $scope.remainingCount = $filter('filter')(todos, {completed: false}).length;
-            $scope.completedCount = todos.length - $scope.remainingCount;
-            $scope.allChecked = !$scope.remainingCount;
-        }, true);
-
-        // Monitor the current route for changes and adjust the filter accordingly.
-        $scope.$on('$routeChangeSuccess', function () {
-            var status = $scope.status = $routeParams.status || '';
-
-            $scope.statusFilter = (status === 'active') ?
-            {completed: false} : (status === 'completed') ?
-            {completed: true} : null;
+            GooglePlus.getUser().then(function (user) {
+                console.log(user);
+            });
+        }, function (err) {
+            console.log(err);
         });
 
-        $scope.addTodo = function () {
-            var newTodo = {
-                title: $scope.newTodo.trim(),
-                completed: false
-            };
 
-            if (!newTodo.title) {
-                return;
-            }
+    };
 
-            $scope.saving = true;
-            store.insert(newTodo)
-                .then(function success() {
-                    $scope.newTodo = '';
-                })
-                .finally(function () {
-                    $scope.saving = false;
-                });
-        };
+    //googleCalendarApi.getCalendars(function (f) {
+    //    console.log(f);
+    //})
 
-        $scope.editTodo = function (todo) {
-            $scope.editedTodo = todo;
-            // Clone the original todo to restore it on demand.
-            $scope.originalTodo = angular.extend({}, todo);
-        };
+    //googleLogin.handleClientLoad();
+    //
+    //$scope.login = function () {
+    //    googleLogin.login();
+    //};
+    //
+    //$scope.$on("googlePlus:loaded", function () {
+    //    googlePlus.getCurrentUser().then(function (user) {
+    //        $scope.currentUser = user;
+    //    });
+    //})
+    //
+    //$scope.currentUser = googleLogin.currentUser;
 
-        $scope.saveEdits = function (todo, event) {
-            // Blur events are automatically triggered after the form submit event.
-            // This does some unfortunate logic handling to prevent saving twice.
-            if (event === 'blur' && $scope.saveEvent === 'submit') {
-                $scope.saveEvent = null;
-                return;
-            }
+    $scope.newTodo = '';
+    $scope.remainingCount = $filter('filter')(todos, {completed: false}).length;
+    $scope.editedTodo = null;
 
-            $scope.saveEvent = event;
+    if ($location.path() === '') {
+        $location.path('/');
+    }
 
-            if ($scope.reverted) {
-                // Todo edits were reverted-- don't save.
-                $scope.reverted = null;
-                return;
-            }
+    $scope.location = $location;
 
-            todo.title = todo.title.trim();
-
-            if (todo.title === $scope.originalTodo.title) {
-                return;
-            }
-
-            store[todo.title ? 'put' : 'delete'](todo)
-                .then(function success() {
-                }, function error() {
-                    todo.title = $scope.originalTodo.title;
-                })
-                .finally(function () {
-                    $scope.editedTodo = null;
-                });
-        };
-
-        $scope.revertEdits = function (todo) {
-            todos[todos.indexOf(todo)] = $scope.originalTodo;
-            $scope.editedTodo = null;
-            $scope.originalTodo = null;
-            $scope.reverted = true;
-        };
-
-        $scope.removeTodo = function (todo) {
-            store.delete(todo);
-        };
-
-        $scope.saveTodo = function (todo) {
-            store.put(todo);
-        };
-
-        $scope.toggleCompleted = function (todo, completed) {
-            if (angular.isDefined(completed)) {
-                todo.completed = completed;
-            }
-            store.put(todo, todos.indexOf(todo))
-                .then(function success() {
-                }, function error() {
-                    todo.completed = !todo.completed;
-                });
-        };
-
-        $scope.clearCompletedTodos = function () {
-            store.clearCompleted();
-        };
-
-        $scope.markAll = function (completed) {
-            todos.forEach(function (todo) {
-                if (todo.completed !== completed) {
-                    $scope.toggleCompleted(todo, completed);
-                }
-            });
-        };
+    $scope.$watch('location.path()', function (path) {
+        $scope.statusFilter = {'/active': {completed: false}, '/completed': {completed: true}}[path];
     });
+
+    $scope.$watch('remainingCount == 0', function (val) {
+        $scope.allChecked = val;
+    });
+
+    $scope.addTodo = function () {
+        var newTodo = $scope.newTodo.trim();
+        if (newTodo.length === 0) {
+            return;
+        }
+
+        todos.push({
+            title: newTodo,
+            completed: false
+        });
+        todoStorage.put(todos);
+
+        $scope.newTodo = '';
+        $scope.remainingCount++;
+    };
+
+    $scope.editTodo = function (todo) {
+        $scope.editedTodo = todo;
+        // Clone the original todo to restore it on demand.
+        $scope.originalTodo = angular.extend({}, todo);
+    };
+
+    $scope.doneEditing = function (todo) {
+        $scope.editedTodo = null;
+        todo.title = todo.title.trim();
+
+        if (!todo.title) {
+            $scope.removeTodo(todo);
+        }
+
+        todoStorage.put(todos);
+    };
+
+    $scope.revertEditing = function (todo) {
+        todos[todos.indexOf(todo)] = $scope.originalTodo;
+        $scope.doneEditing($scope.originalTodo);
+    };
+
+    $scope.removeTodo = function (todo) {
+        $scope.remainingCount -= todo.completed ? 0 : 1;
+        todos.splice(todos.indexOf(todo), 1);
+        todoStorage.put(todos);
+    };
+
+    $scope.todoCompleted = function (todo) {
+        $scope.remainingCount += todo.completed ? -1 : 1;
+        todoStorage.put(todos);
+    };
+
+    $scope.clearCompletedTodos = function () {
+        $scope.todos = todos = todos.filter(function (val) {
+            return true;
+            // return !val.completed;
+        });
+        todoStorage.put(todos);
+    };
+
+    $scope.markAll = function (completed) {
+        todos.forEach(function (todo) {
+            todo.completed = !completed;
+        });
+        $scope.remainingCount = completed ? todos.length : 0;
+        todoStorage.put(todos);
+    };
+});
