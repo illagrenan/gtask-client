@@ -11,162 +11,180 @@ var options = {};
  */
 var google_plus_module = angular.module('googleplus', []);
 
-google_plus_module.
-    provider('GooglePlus', [function () {
+/**
+ * Initialize async Google API and return its promise.
+ */
+google_plus_module.service("initializeGoogleApi", function ($q) {
+    console.info("Initializing Google API.")
+
+    var deferedGoogleApi = $q.defer();
+
+    // See: https://github.com/gaslight/angular-googleapi/pull/8/files
+    window._googleApiLoaded = function () {
+        gapi.auth.init(function () {
+            console.info("Google API client library has been loaded.");
+            deferedGoogleApi.resolve(gapi);
+        });
+    };
+
+    var gapiScriptElement = document.createElement('script');
+    gapiScriptElement.type = 'text/javascript';
+    gapiScriptElement.async = true;
+    gapiScriptElement.src = 'https://apis.google.com/js/client.js?onload=_googleApiLoaded';
+    var scripts = document.getElementsByTagName('script')[0];
+    scripts.parentNode.insertBefore(gapiScriptElement, scripts);
+
+    return deferedGoogleApi.promise;
+})
+
+google_plus_module.service("authorizedApi", function (initializeGoogleApi, GooglePlus, $q) {
+
+    var authorizedApiDefered = $q.defer()
+
+    initializeGoogleApi.then(function (resolvedApi) {
+        GooglePlus.checkAuth().then(function (authResult) {
+            authorizedApiDefered.resolve(resolvedApi)
+        })
+    });
+
+    return authorizedApiDefered.promise
+});
+
+google_plus_module.provider('GooglePlus', [function () {
+
+    /**
+     * clientId
+     * @type {Number}
+     */
+    options.clientId = null;
+
+    this.setClientId = function (clientId) {
+        options.clientId = clientId;
+        return this;
+    };
+
+    this.getClientId = function () {
+        return options.clientId;
+    };
+
+    /**
+     * apiKey
+     * @type {String}
+     */
+    options.apiKey = null;
+
+    this.setApiKey = function (apiKey) {
+        options.apiKey = apiKey;
+        return this;
+    };
+
+    this.getApiKey = function () {
+        return options.apiKey;
+    };
+
+    /**
+     * Scopes
+     * @default 'https://www.googleapis.com/auth/plus.login'
+     * @type {Boolean}
+     */
+    options.scopes = 'https://www.googleapis.com/auth/plus.login';
+
+    this.setScopes = function (scopes) {
+        options.scopes = scopes;
+        return this;
+    };
+
+    this.getScopes = function () {
+        return options.scopes;
+    };
+
+    /**
+     * Init Google Plus API
+     */
+    this.init = function (customOptions) {
+        angular.extend(options, customOptions);
+    };
+
+    /**
+     * This defines the Google Plus Service on run.
+     */
+    this.$get = ['$q', '$rootScope', '$timeout', function ($q, $rootScope, $timeout) {
 
         /**
-         * clientId
-         * @type {Number}
+         * Create a deferred instance to implement asynchronous calls
+         * @type {Object}
          */
-        options.clientId = null;
-
-        this.setClientId = function (clientId) {
-            options.clientId = clientId;
-            return this;
-        };
-
-        this.getClientId = function () {
-            return options.clientId;
-        };
+        var deferred = $q.defer();
 
         /**
-         * apiKey
-         * @type {String}
+         * NgGooglePlus Class
+         * @type {Class}
          */
-        options.apiKey = null;
-
-        this.setApiKey = function (apiKey) {
-            options.apiKey = apiKey;
-            return this;
+        var NgGooglePlus = function () {
         };
 
-        this.getApiKey = function () {
-            return options.apiKey;
+        NgGooglePlus.prototype.login = function () {
+            gapi.auth.authorize({
+                client_id: options.clientId,
+                scope: options.scopes,
+                immediate: false
+            }, this.handleAuthResult);
+            return deferred.promise;
         };
 
-        /**
-         * Scopes
-         * @default 'https://www.googleapis.com/auth/plus.login'
-         * @type {Boolean}
-         */
-        options.scopes = 'https://www.googleapis.com/auth/plus.login';
-
-        this.setScopes = function (scopes) {
-            options.scopes = scopes;
-            return this;
+        NgGooglePlus.prototype.checkAuth = function () {
+            gapi.auth.authorize({
+                client_id: options.clientId,
+                scope: options.scopes,
+                immediate: true
+            }, this.handleAuthResult);
+            return deferred.promise;
         };
 
-        this.getScopes = function () {
-            return options.scopes;
+        NgGooglePlus.prototype.handleClientLoad = function () {
+            gapi.client.setApiKey(options.apiKey);
+            gapi.auth.init(function () {
+            });
+            $timeout(this.checkAuth, 1);
         };
 
-        /**
-         * Init Google Plus API
-         */
-        this.init = function (customOptions) {
-            angular.extend(options, customOptions);
+        NgGooglePlus.prototype.handleAuthResult = function (authResult) {
+            if (authResult && !authResult.error) {
+                deferred.resolve(authResult);
+                $rootScope.$apply();
+            } else {
+                deferred.reject('error');
+            }
         };
 
-        /**
-         * This defines the Google Plus Service on run.
-         */
-        this.$get = ['$q', '$rootScope', '$timeout', function ($q, $rootScope, $timeout) {
-
-            /**
-             * Create a deferred instance to implement asynchronous calls
-             * @type {Object}
-             */
+        NgGooglePlus.prototype.getUser = function () {
             var deferred = $q.defer();
 
-            /**
-             * NgGooglePlus Class
-             * @type {Class}
-             */
-            var NgGooglePlus = function () {
-            };
-
-            NgGooglePlus.prototype.login = function () {
-                gapi.auth.authorize({
-                    client_id: options.clientId,
-                    scope: options.scopes,
-                    immediate: false
-                }, this.handleAuthResult);
-                return deferred.promise;
-            };
-
-            NgGooglePlus.prototype.checkAuth = function () {
-                gapi.auth.authorize({
-                    client_id: options.clientId,
-                    scope: options.scopes,
-                    immediate: true
-                }, this.handleAuthResult);
-                return deferred.promise;
-            };
-
-            NgGooglePlus.prototype.handleClientLoad = function () {
-                gapi.client.setApiKey(options.apiKey);
-                gapi.auth.init(function () {
-                });
-                $timeout(this.checkAuth, 1);
-            };
-
-            NgGooglePlus.prototype.handleAuthResult = function (authResult) {
-                if (authResult && !authResult.error) {
-                    deferred.resolve(authResult);
+            gapi.client.load('oauth2', 'v2', function () {
+                gapi.client.oauth2.userinfo.get().execute(function (resp) {
+                    deferred.resolve(resp);
                     $rootScope.$apply();
-                } else {
-                    deferred.reject('error');
-                }
-            };
-
-            NgGooglePlus.prototype.getUser = function () {
-                var deferred = $q.defer();
-
-                gapi.client.load('oauth2', 'v2', function () {
-                    gapi.client.oauth2.userinfo.get().execute(function (resp) {
-                        deferred.resolve(resp);
-                        $rootScope.$apply();
-                    });
                 });
-
-                return deferred.promise;
-            };
-
-            NgGooglePlus.prototype.getToken = function () {
-                return gapi.auth.getToken();
-            };
-
-            NgGooglePlus.prototype.setToken = function (token) {
-                return gapi.auth.setToken(token);
-            };
-
-            return new NgGooglePlus();
-        }];
-    }])
-    .service("initializeGoogleApi", function ($q) {
-
-        // var gapiDeffered = $q.defer()
-
-        console.log("Hello from service.")
-
-        return
-
-    })
-    // Initialization of module
-    .run(function ($rootScope, $window, $q, initializeGoogleApi) {
-
-        // See: https://github.com/gaslight/angular-googleapi/pull/8/files
-        window._googleApiLoaded = function () {
-            gapi.auth.init(function () {
-                console.info("Google API client library has been loaded.");
-                $rootScope.$broadcast("google:ready", {});
             });
+
+            return deferred.promise;
         };
 
-        var po = document.createElement('script');
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'https://apis.google.com/js/client.js?onload=_googleApiLoaded';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(po, s);
+        NgGooglePlus.prototype.getToken = function () {
+            return gapi.auth.getToken();
+        };
+
+        NgGooglePlus.prototype.setToken = function (token) {
+            return gapi.auth.setToken(token);
+        };
+
+        return new NgGooglePlus();
+    }];
+}])
+    // Initialization of module
+    .run(function ($rootScope, $window, $q, initializeGoogleApi) {
+        initializeGoogleApi.then(function (resolvedGoogleApi) {
+            console.info("Google API has been resolved", resolvedGoogleApi);
+            $rootScope.$broadcast("google:ready", {});
+        })
     });

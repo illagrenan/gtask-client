@@ -4,11 +4,12 @@
     <meta charset="utf-8">
     <title>AngularJS • TodoMVC</title>
     <link rel="stylesheet" href="bower_components/todomvc-common/base.css">
+    <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css">
     <style>[ng-cloak] {
         display: none;
     }</style>
 </head>
-<body ng-controller="TodoCtrl">
+<body>
 
 <div style="position: absolute; width: 300px; height: 100px; top: 0; left: 0; background-color: white; padding: 10px;">
     <br/>
@@ -17,7 +18,7 @@
     Logged in as {{currentUser.displayName}}
 </div>
 
-<section id="todoapp">
+<section id="todoapp" ng-controller="TodoCtrl">
 
 
     <header id="header">
@@ -82,7 +83,10 @@
 
 
 <script src="bower_components/angular/angular.js"></script>
+
 <script src="js/gapi/angular-google-plus.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
 
 <script src="js/app.js"></script>
 

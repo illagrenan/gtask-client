@@ -7,7 +7,7 @@
  *
  * @type {angular.Module}
  */
-var app = angular.module('todomvc', ["googleplus"]);
+var app = angular.module('todomvc', ["googleplus", 'cfp.loadingBar']);
 
 app.config(['GooglePlusProvider', function (GooglePlusProvider) {
     GooglePlusProvider.init({
