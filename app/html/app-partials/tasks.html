@@ -1,0 +1,44 @@
+<div ng-repeat="todo in filteredTodos = (todos | filter:statusFilter | filter:foo | orderBy: 'updated' : true)"
+     ng-class="{completed: todo.status == 'completed', editing: todo == editedTodo}">
+
+    <div class="input-group input-group-lg">
+
+                    <span class="input-group-addon">
+                    <input class="" ng-model="todo.completed" ng-click="todoCompleted(todo)" type="checkbox"
+                           id="c-{{todo.id}}">
+                    </span>
+
+        <form ng-submit="doneEditing(todo)">
+            <input class="edit form-control input-lg" ng-trim="false" ng-model="todo.title"
+                   ng-blur="doneEditing(todo)" todo-escape="revertEditing(todo)"
+                   todo-focus="todo == editedTodo">
+        </form>
+
+                    <span class="input-group-btn">
+                      <button class="btn btn-default btn-lg destroy" ng-click="removeTodo(todo)"><i
+                              class="glyphicon glyphicon-remove"></i></button>
+                    </span>
+
+    </div>
+</div>
+
+<div class="text-center" ng-hide="dataLoaded">
+    <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+    </div>
+
+    <p>
+        <strong>
+            Loading tasks...
+        </strong>
+    </p>
+
+</div>
+
+<div ng-show="filteredTodos.length == 0" ng-hide="!dataLoaded">
+    <p>
+        No tasks.
+    </p>
+</div>

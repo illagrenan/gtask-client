@@ -1,10 +1,9 @@
-/*global todomvc */
 'use strict';
 
 /**
  * Services that persists and retrieves TODOs from localStorage
  */
-app.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope) {
+gTodoApp.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope) {
     var STORAGE_ID = 'todos-angularjs-perf';
 
     return {
@@ -12,15 +11,29 @@ app.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope) {
 
             var dataDeferred = $q.defer()
 
-            authorizedApi.then(function (authorizedApi) {
-                gapi.client.load('tasks', 'v1', function () {
-                    gapi.client.tasks.tasks.list({'tasklist': '@default'}).execute(function (resp) {
-                            dataDeferred.resolve(resp.items);
-                            $rootScope.$apply();
-                        }
-                    )
+            if ($rootScope.IS_DEBUG === true) {
+                var i = [
+                    {
+                        title: 'Lorem ipsum',
+                        status: 'needsAction'
+                    }
+                ];
+
+                dataDeferred.resolve(i);
+            } else {
+                authorizedApi.then(function (authorizedApi) {
+
+                    console.log("CALLING FOR DATA");
+
+                    gapi.client.load('tasks', 'v1', function () {
+                        gapi.client.tasks.tasks.list({'tasklist': '@default'}).execute(function (resp) {
+                                dataDeferred.resolve(resp.items);
+                                $rootScope.$apply();
+                            }
+                        )
+                    });
                 });
-            });
+            }
 
             return dataDeferred.promise;
         },

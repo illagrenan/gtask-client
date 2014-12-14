@@ -1,0 +1,37 @@
+<section id="todoapp">
+    <div class="row">
+        <div class="col-md-12 text-center">
+
+            <h1>gTasks Authorization</h1>
+
+            <div class="checking_auth" ng-hide="rejected">
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+
+                <p>
+                    Downloading Google API.
+                    <span ng-show="googleLoaded">
+                        <i class="fa fa-check text-success"></i>
+                    </span>
+                </p>
+            </div>
+
+            <div ng-show="rejected">
+
+                <p>
+                    Basic profile information and Google Tasks.
+                </p>
+
+                <button type="submit" ng-click="login()" class="btn-primary btn">
+                    <i class="fa fa-lock"></i>
+                    Authorize this app
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</section>

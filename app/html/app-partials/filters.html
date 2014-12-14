@@ -1,0 +1,29 @@
+<div ng-cloak ng-show="dataLoaded">
+    <div class="col-sm-2 col-sm-offset-2  text-center">
+      <span id="todo-count"><strong>{{remainingCount}}</strong>
+        <ng-pluralize count="remainingCount" when="{ one: 'item left', other: 'items left' }"></ng-pluralize>
+      </span>
+    </div>
+
+    <div class="col-sm-4 text-center" ng-show="todos.length">
+        <ul class="list-inline" id="filters">
+            <li>
+                <a class="btn btn-sm" ng-class="{selected: activeFilter == undefined} " href="#/app">All</a>
+            </li>
+            <li>
+                <a class="btn btn-sm" ng-class="{selected: activeFilter == 'active'}"
+                   href="#/app/?filter=active">Active
+                    <span class="badge badge-info">{{remainingCount}}</span></a>
+            </li>
+            <li>
+                <a class="btn btn-sm" ng-class="{selected: activeFilter == 'completed'}"
+                   href="#/app/?filter=completed">Completed</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-sm-2  text-center">
+        <button class="btn btn-sm btn-success" id="clear-completed" ng-click="clearCompletedTodos()"
+                ng-show="remainingCount < todos.length">Clear completed ({{todos.length - remainingCount}})
+        </button>
+    </div>
+</div>

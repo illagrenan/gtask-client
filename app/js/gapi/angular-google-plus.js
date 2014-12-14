@@ -14,7 +14,7 @@ var google_plus_module = angular.module('googleplus', []);
 /**
  * Initialize async Google API and return its promise.
  */
-google_plus_module.service("initializeGoogleApi", function ($q) {
+google_plus_module.service("initializeGoogleApi", function ($q, $rootScope) {
     console.info("Initializing Google API.")
 
     var deferedGoogleApi = $q.defer();
@@ -22,6 +22,7 @@ google_plus_module.service("initializeGoogleApi", function ($q) {
     // See: https://github.com/gaslight/angular-googleapi/pull/8/files
     window._googleApiLoaded = function () {
         gapi.auth.init(function () {
+            $rootScope.$broadcast("google:loaded", {});
             console.info("Google API client library has been loaded.");
             deferedGoogleApi.resolve(gapi);
         });
@@ -37,14 +38,26 @@ google_plus_module.service("initializeGoogleApi", function ($q) {
     return deferedGoogleApi.promise;
 })
 
-google_plus_module.service("authorizedApi", function (initializeGoogleApi, GooglePlus, $q) {
+google_plus_module.service("authorizedApi", function (initializeGoogleApi, GooglePlus, $q, $rootScope) {
+
+    // TODO Reject this if error with authResult
 
     var authorizedApiDefered = $q.defer()
 
+    console.log("Authorizing");
+
     initializeGoogleApi.then(function (resolvedApi) {
+
+        console.log("Checking auth");
+
         GooglePlus.checkAuth().then(function (authResult) {
-            authorizedApiDefered.resolve(resolvedApi)
+            authorizedApiDefered.resolve(resolvedApi);
+            console.log("Authorized api = ", authResult);
         })
+    });
+
+    $rootScope.$on("google:authenticated", function () {
+        authorizedApiDefered.resolve(gapi);
     });
 
     return authorizedApiDefered.promise
@@ -133,11 +146,15 @@ google_plus_module.provider('GooglePlus', [function () {
         };
 
         NgGooglePlus.prototype.checkAuth = function () {
+
+            console.log("NgGooglePlus.prototype.checkAuth");
+
             gapi.auth.authorize({
                 client_id: options.clientId,
                 scope: options.scopes,
                 immediate: true
             }, this.handleAuthResult);
+
             return deferred.promise;
         };
 
@@ -150,10 +167,12 @@ google_plus_module.provider('GooglePlus', [function () {
 
         NgGooglePlus.prototype.handleAuthResult = function (authResult) {
             if (authResult && !authResult.error) {
+                $rootScope.$broadcast("google:authenticated", {});
                 deferred.resolve(authResult);
                 $rootScope.$apply();
             } else {
-                deferred.reject('error');
+                $rootScope.$broadcast("google:rejected", {});
+                deferred.reject(authResult);
             }
         };
 

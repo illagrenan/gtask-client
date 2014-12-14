@@ -1,0 +1,63 @@
+<section id="todoapp">
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- <HEADER> -->
+            <header id="header" ng-include="'html/app-partials/header.html'">
+            </header>
+            <!-- </HEADER> -->
+
+            <!-- <DIVIDER> -->
+            <div class="row" ng-include="'html/app-partials/divider.html'">
+            </div>
+            <!-- </DIVIDER> -->
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <form id="filter-form" ng-submit="f()" role="form">
+                <div class="form-group">
+                    <label class="sr-only" for="filter-text">Email address</label>
+
+                    <input type="search" class="form-control input-lg" id="filter-text"
+                           placeholder="Filter tasks by typing"
+                           autofocus="autofocus" required="required" ng-model="foo" ng-disabled="todos.length == 0">
+                </div>
+            </form>
+        </div>
+        <div class="col-md-9">
+            <!--<ADD-TD-FORM>-->
+            <section id="add-todo-form" ng-include="'html/app-partials/add-todo-form.html'">
+            </section>
+            <!--</ADD-TD-FORM>-->
+
+            <br/>
+
+            <div class="clearfix"></div>
+
+            <!--<FILTERS>-->
+            <section id="filter" ng-include="'html/app-partials/filters.html'">
+            </section>
+            <!--</FILTERS>-->
+
+            <div class="clearfix"></div>
+
+            <!-- <TASKS SECTION> -->
+            <section id="tasks" ng-include="'html/app-partials/tasks.html'">
+            </section>
+            <!-- </TASKS SECTION> -->
+
+            <!-- <DIVIDER> -->
+            <div ng-include="'html/app-partials/divider.html'">
+            </div>
+            <!-- </DIVIDER> -->
+
+            <!-- <TOOLS SECTION> -->
+            <section id="tools" ng-show="todos.length" ng-cloak ng-include="'html/app-partials/tools.html'">
+            </section>
+            <!-- </TOOLS SECTION> -->
+        </div>
+    </div>
+
+</section>
