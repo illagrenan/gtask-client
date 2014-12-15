@@ -1,0 +1,42 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext);
+#toolbar {
+  width: 100%;
+  background-color: #4285F4;
+  margin-bottom: 10px;
+  min-height: 72px;
+  -webkit-box-shadow: 0 2px 4px 0 #b3b3b3;
+  box-shadow: 0 2px 4px 0 #b3b3b3;
+  -webkit-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+  -ms-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  transition: all 200ms linear;
+  padding: 15px 0 15px 0;
+}
+#toolbar img.profile-picture {
+  max-width: 40px;
+  max-height: 40px;
+  margin-left: 5px;
+}
+#toolbar .user-info {
+  display: table-cell;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+}
+#toolbar .logo {
+  font-family: 'Roboto', sans-serif;
+  color: white;
+}
+.vertical-align {
+  display: flex;
+  flex-direction: row;
+}
+.vertical-align > [class^="col-"],
+.vertical-align > [class*=" col-"] {
+  display: flex;
+  align-items: center;
+  /* Align the flex-items vertically */
+  justify-content: center;
+  /* Optional, to align inner flex-items
+                               horizontally within the column  */
+}

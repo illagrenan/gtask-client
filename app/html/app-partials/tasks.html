@@ -1,44 +1,74 @@
-<div ng-repeat="todo in filteredTodos = (todos | filter:statusFilter | filter:foo | orderBy: 'updated' : true)"
-     ng-class="{completed: todo.status == 'completed', editing: todo == editedTodo}">
+<div ng-repeat="todo in filteredTodos = (todos | filter:statusFilter | filter:filterByKeywordText | orderBy: 'updated' : true)"
+     ng-class="{completed: todo.status == 'completed', editing: todo == editedTodo}"
+     class="row one-task animated fadeIn">
 
-    <div class="input-group input-group-lg">
+    <div class="col-md-1 check-col">
+        <form role="form">
+            <paper-checkbox ng-click="todoCompleted(todo)"
+                            id="c-{{todo.id}}"
+                            type="checkbox"
+                            ng-checked="todo.status === 'completed'">
+            </paper-checkbox>
 
-                    <span class="input-group-addon">
-                    <input class="" ng-model="todo.completed" ng-click="todoCompleted(todo)" type="checkbox"
-                           id="c-{{todo.id}}">
-                    </span>
+            <!--{{todo.status}}-->
 
-        <form ng-submit="doneEditing(todo)">
-            <input class="edit form-control input-lg" ng-trim="false" ng-model="todo.title"
-                   ng-blur="doneEditing(todo)" todo-escape="revertEditing(todo)"
-                   todo-focus="todo == editedTodo">
+            <!--<paper-checkbox ng-checked="todo.status === 'completed'" id="c-{{todo.id}}" ng-click="todoCompleted(todo)">-->
+            <!--</paper-checkbox>-->
+
+        </form>
+    </div>
+
+    <div class="col-md-10">
+        <div class="view">
+            <label ng-dblclick="editTodo(todo)" for="c-{{todo.id}}">
+                <span ng-bind-html="todo.title|highlight:filterByKeywordText:caseSensitive"></span>
+            </label>
+        </div>
+
+        <form ng-submit="doneEditing(todo, 'submit')">
+            <input class="edit" ng-trim="false" ng-model="todo.title" todo-escape="revertEdits(todo)"
+                   ng-blur="saveEdits(todo, 'blur')" todo-focus="todo == editedTodo">
         </form>
 
-                    <span class="input-group-btn">
-                      <button class="btn btn-default btn-lg destroy" ng-click="removeTodo(todo)"><i
-                              class="glyphicon glyphicon-remove"></i></button>
-                    </span>
-
-    </div>
-</div>
-
-<div class="text-center" ng-hide="dataLoaded">
-    <div class="spinner">
-        <div class="bounce1"></div>
-        <div class="bounce2"></div>
-        <div class="bounce3"></div>
     </div>
 
-    <p>
-        <strong>
-            Loading tasks...
-        </strong>
-    </p>
+
+    <div class="col-md-1 remove-col">
+        <form ng-submit="removeTodo(todo)" role="form">
+
+            <!--<paper-button raised ng-click="removeTodo(todo)">Remove</paper-button>-->
+
+            <button class="btn btn-default btn-xs" ng-click="removeTodo(todo)">
+                <i class="glyphicon glyphicon-remove"></i> Remove
+            </button>
+        </form>
+    </div>
 
 </div>
 
-<div ng-show="filteredTodos.length == 0" ng-hide="!dataLoaded">
-    <p>
-        No tasks.
-    </p>
+<div class="row">
+    <div class="col-md-12">
+        <!-- <LOADING STATUS> -->
+        <div class="text-center" ng-hide="dataLoaded">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+
+            <p>
+                <strong>
+                    Loading tasks...
+                </strong>
+            </p>
+
+        </div>
+
+        <div ng-show="filteredTodos.length == 0 && dataLoaded === true">
+            <p>
+                No tasks.
+            </p>
+        </div>
+        <!-- </LOADING STATUS> -->
+    </div>
 </div>

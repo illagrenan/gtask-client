@@ -1,10 +1,47 @@
-body {
-  padding-top: 10px;
-}
-.completed input {
-  background-color: rgba(132, 255, 132, 0.36);
-  text-decoration: line-through;
-}
 a.selected {
   font-weight: bold;
+}
+.ui-match {
+  background: yellow;
+}
+.editing .view {
+  display: none;
+}
+.edit {
+  display: none;
+}
+.editing .edit {
+  display: block;
+}
+.row.completed label {
+  text-decoration: line-through;
+  color: rgba(0, 0, 0, 0.55);
+}
+.one-task {
+  padding-top: 9px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed #bcbcbc;
+  -webkit-transition: all 200ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  -moz-transition: all 200ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-transition: all 200ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 200ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  /* easeOutQuart */
+  -webkit-transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -moz-transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  -o-transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  /* easeOutQuart */
+}
+.one-task .remove-col button {
+  color: #bcbcbc;
+}
+.one-task .check-col {
+  width: 25px;
+  padding-top: 1px;
+}
+.one-task:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+.one-task:hover .remove-col button {
+  color: #000000;
 }

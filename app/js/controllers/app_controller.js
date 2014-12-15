@@ -25,24 +25,21 @@ gTodoControllers.controller(
             var scope = $scope;
             var todos = scope.todos = [];
 
+
+            // Initial load of all tasks
             todoStorage.get().then(function (data) {
                 scope.todos = data;
                 scope.dataLoaded = true;
+                scope.remainingCount = $filter('filter')(scope.todos, {status: "needsAction"}).length;
                 cfpLoadingBar.complete();
             });
 
             scope.$on("google:ready", function () {
                 cfpLoadingBar.start();
-                console.log("google:ready");
             });
 
             scope.newTodo = '';
-            scope.remainingCount = $filter('filter')(todos, {completed: false}).length;
             scope.editedTodo = null;
-
-            if ($location.path() === '') {
-                $location.path('/');
-            }
 
             $scope.setFilter = function () {
                 var activeFilter = $location.search().filter;
@@ -52,7 +49,14 @@ gTodoControllers.controller(
                     'active': {status: "needsAction"},
                     'completed': {status: "completed"}
                 }[activeFilter];
-            }
+            };
+
+            $scope.revertEdits = function (todo) {
+                todos[todos.indexOf(todo)] = $scope.originalTodo;
+                $scope.editedTodo = null;
+                $scope.originalTodo = null;
+                $scope.reverted = true;
+            };
 
             $scope.$on('$routeUpdate', function () {
                 console.debug("$routeUpdate", "Setting filter");
@@ -70,10 +74,17 @@ gTodoControllers.controller(
                 $scope.allChecked = val;
             });
 
-            scope.addTodo = function () {
-                var newTodo = $scope.newTodo.trim();
+            scope.addTodo = function (newTodo) {
+                var addTodoFormScope = this;
+
+                addTodoFormScope.dataWorking = true;
+                addTodoFormScope.placeholder = "Adding task...";
+
+                newTodo = newTodo.trim();
 
                 if (newTodo.length === 0) {
+                    addTodoFormScope.dataWorking = false;
+                    addTodoFormScope.placeholder = null;
                     return;
                 }
 
@@ -85,15 +96,19 @@ gTodoControllers.controller(
                     }
                 ).then(
                     function (data) {
-                       $scope.todos.push(data);
+                        $scope.todos.push(data);
+                        addTodoFormScope.dataWorking = false;
+                        addTodoFormScope.placeholder = null;
+                        addTodoFormScope.focusMe = true;
                     }
                 )
 
-                $scope.newTodo = '';
+                addTodoFormScope.newTodo = '';
                 $scope.remainingCount++;
             };
 
             scope.editTodo = function (todo) {
+                // alert("haha");
                 $scope.editedTodo = todo;
                 // Clone the original todo to restore it on demand.
                 $scope.originalTodo = angular.extend({}, todo);
@@ -122,19 +137,28 @@ gTodoControllers.controller(
             };
 
             scope.todoCompleted = function (todo) {
-                $scope.remainingCount += todo.completed ? -1 : 1;
+
+                var newStatus;
+
+                if (todo.status === "completed") {
+                    $scope.remainingCount++;
+                    newStatus = "needsAction";
+                } else {
+                    $scope.remainingCount--;
+                    newStatus = "completed";
+                }
+
 
                 todoStorage.update(
                     todo.id,
                     {
-                        'status': 'completed'
+                        'status': newStatus
                     }
                 ).then(
                     function (data) {
-                        console.log(data);
+                        todo.status = newStatus;
                     }
                 )
-
             };
 
             scope.clearCompletedTodos = function () {

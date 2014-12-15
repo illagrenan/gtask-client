@@ -13,7 +13,15 @@
     "bootstrap": "*",
     "font-awesome": "*",
     "angular-google-plus": "~0.1.2",
-    "angular-loading-bar": "*"
+    "angular-loading-bar": "*",
+    "angular-ui-utils": "bower-highlight",
+    "angular-sanitize": "~1.3.6",
+    "polymer-polymer": "~0.5.2",
+    "polymer": "Polymer/polymer#~0.5.2",
+    "paper-checkbox": "Polymer/paper-checkbox#~0.5.2",
+    "ng-polymer-elements": "~0.2.0",
+    "paper-button": "Polymer/paper-button#~0.5.2",
+    "animate.css": "~3.2.0"
   },
   "resolutions": {
     "angular": "~1.3.6"

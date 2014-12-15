@@ -12,6 +12,10 @@ var gTodoApp = angular.module('gTodo', [
 
     'googleplus',
     'cfp.loadingBar',
+    'ui.highlight',
+    'ngSanitize',
+    'todo.directives',
+    //'ng-polymer-elements',
 
     'gTodoControllers'
 ]);

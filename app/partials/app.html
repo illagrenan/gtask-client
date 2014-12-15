@@ -1,5 +1,4 @@
 <section id="todoapp">
-
     <div class="row">
         <div class="col-md-12">
             <!-- <HEADER> -->
@@ -20,9 +19,13 @@
                 <div class="form-group">
                     <label class="sr-only" for="filter-text">Email address</label>
 
-                    <input type="search" class="form-control input-lg" id="filter-text"
+                    <input type="search"
+                           class="form-control input-lg"
+                           id="filter-text"
                            placeholder="Filter tasks by typing"
-                           autofocus="autofocus" required="required" ng-model="foo" ng-disabled="todos.length == 0">
+                           required="required"
+                           ng-model="filterByKeywordText"
+                           ng-disabled="todos.length == 0">
                 </div>
             </form>
         </div>
