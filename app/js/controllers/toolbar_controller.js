@@ -17,9 +17,8 @@ gTodoControllers.controller(
         'GooglePlus',
 
         function ToolbarController($scope, GooglePlus) {
-            $scope.$on("google:ready", function () {
+            $scope.$on("google:authenticated", function () {
                 GooglePlus.getUser().then(function (user) {
-                    console.log(user);
                     $scope.userData = user;
                 });
             });

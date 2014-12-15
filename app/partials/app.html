@@ -15,19 +15,53 @@
 
     <div class="row">
         <div class="col-md-3">
-            <form id="filter-form" ng-submit="f()" role="form">
-                <div class="form-group">
-                    <label class="sr-only" for="filter-text">Email address</label>
 
+
+            <h3>
+                Your tasklists
+            </h3>
+            <core-menu raised>
+                <paper-item>
+                    <strong>@default</strong>
+
+                </paper-item>
+                <paper-item>Copy</paper-item>
+                <paper-item>Paste</paper-item>
+            </core-menu>
+
+            <h3>
+                Task finder
+            </h3>
+
+            <form id="filter-form" ng-submit="f()" role="form">
+
+
+                <div class="input-group">
+
+
+                         <span class="input-group-btn">
+                            <button class="btn btn-success btn-blue-success">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+
+                    <label class="sr-only" for="filter-text">Filter by title</label>
                     <input type="search"
-                           class="form-control input-lg"
+                           class="form-control"
                            id="filter-text"
-                           placeholder="Filter tasks by typing"
+                           placeholder="Filter tasks by typing..."
                            required="required"
                            ng-model="filterByKeywordText"
-                           ng-disabled="todos.length == 0">
+                           ng-disabled="todos.length == 0"
+                           aria-describedby="helpBlock">
                 </div>
+
+                    <span id="helpBlock" class="help-block">
+                        We'll search tasks in the current list.
+                    </span>
+
             </form>
+
         </div>
         <div class="col-md-9">
             <!--<ADD-TD-FORM>-->

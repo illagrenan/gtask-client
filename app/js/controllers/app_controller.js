@@ -31,11 +31,11 @@ gTodoControllers.controller(
                 scope.todos = data;
                 scope.dataLoaded = true;
                 scope.remainingCount = $filter('filter')(scope.todos, {status: "needsAction"}).length;
-                cfpLoadingBar.complete();
+                //  cfpLoadingBar.complete();
             });
 
             scope.$on("google:ready", function () {
-                cfpLoadingBar.start();
+                // cfpLoadingBar.start();
             });
 
             scope.newTodo = '';
@@ -162,11 +162,16 @@ gTodoControllers.controller(
             };
 
             scope.clearCompletedTodos = function () {
-                $scope.todos = todos = todos.filter(function (val) {
-                    return true;
-                    // return !val.completed;
-                });
-                todoStorage.put(todos);
+
+                //$scope.todos = todos = todos.filter(function (val) {
+                //    return true;
+                //    // return !val.completed;
+                //});
+                //todoStorage.put(todos);
+            };
+
+            scope.confirmDeleting = function () {
+                document.getElementById('toggleDialog2').toggle();
             };
 
             scope.markAll = function (completed) {

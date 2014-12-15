@@ -15,7 +15,7 @@ var gTodoApp = angular.module('gTodo', [
     'ui.highlight',
     'ngSanitize',
     'todo.directives',
-    //'ng-polymer-elements',
+    'ng-polymer-elements',
 
     'gTodoControllers'
 ]);

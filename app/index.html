@@ -6,6 +6,7 @@
 
     <!-- Polyfill Web Components support for older browsers -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 
     <!--<link rel="stylesheet" href="bower_components/todomvc-common/base.css">-->
     <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css">
@@ -18,10 +19,15 @@
     <!--<POLYMER ELEMENTS>-->
     <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
     <link rel="import" href="bower_components/paper-button/paper-button.html">
+    <link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+    <link rel="import" href="bower_components/paper-item/paper-item.html">
+    <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+    <link rel="import" href="bower_components/paper-dialog/paper-action-dialog.html">
     <!--</POLYMER ELEMENTS>-->
 
     <link rel="stylesheet" href="css/loading_icon.css"/>
     <link rel="stylesheet" href="css/base.css"/>
+    <link rel="stylesheet" href="css/cb.css"/>
     <link rel="stylesheet" href="css/toolbar.css"/>
 
     <style>
@@ -50,8 +56,7 @@
                 <img ng-src="{{userData.picture}}"
                      src="http://placehold.it/100x100"
                      alt="{{userData.name}}'s profile picture"
-                     class="img-circle ng-cloak profile-picture animated fadeIn"
-                     ng-hide="!userData"/>
+                     class="img-circle ng-cloak profile-picture animated fadeIn"/>
             </div>
 
         </div>
@@ -83,6 +88,27 @@
 <script src="js/controllers/toolbar_controller.js"></script>
 <script src="js/controllers/index_controller.js"></script>
 <script src="js/controllers/app_controller.js"></script>
+
+
+<script>
+
+    $(document).on("click", ".check-awesome label", function () {
+        // find the first span which is our circle/bubble
+        var el = $(this).children('span:first-child');
+
+        // add the bubble class (we do this so it doesnt show on page load)
+        el.addClass('cCircle');
+
+        // clone it
+        var newone = el.clone(true);
+
+        // add the cloned version before our original
+        el.before(newone);
+
+        // remove the original so that it is ready to run on next click
+        $("." + el.attr("class") + ":last").remove();
+    });
+</script>
 
 </body>
 </html>
