@@ -1,71 +1,71 @@
-<div ng-repeat="todo in filteredTodos = (todos | filter:statusFilter | filter:filterByKeywordText | orderBy: 'updated' : true)"
-     ng-class="{completed: todo.status == 'completed', editing: todo == editedTodo}"
-     class="row one-task animated fadeIn">
+<div ng-repeat="group in groups">
 
-    <div class="col-md-1 check-col">
-        <form role="form">
+    <h2>
+        {{ group.name }}
+    </h2>
 
+    <div ng-show="filteredTodos.length == 0 && dataLoaded === true" class="no-task-here">
 
-            <!-- paper-checkbox is not working in FF -->
-            <!--<paper-checkbox ng-click="todoCompleted(todo)"-->
-            <!--id="c-{{todo.id}}"-->
-            <!--type="checkbox"-->
-            <!--ng-checked="todo.status === 'completed'">-->
-            <!--</paper-checkbox>-->
+        <p>
+            <i class="fa fa-check-circle-o fa-3x add-blue"></i>
+            <br/>
+            <strong>
+                Great! There are no tasks.
+            </strong>
+        </p>
 
-
-            <!--<input type="checkbox"-->
-            <!--ng-click="todoCompleted(todo)"-->
-            <!--id="c-{{todo.id}}"-->
-            <!--ng-checked="todo.status === 'completed'"/>-->
-
-            <!--<label for="c-{{todo.id}}"></label>-->
-
-
-            <div class="check-awesome">
-                <input type="checkbox" id="c-{{todo.id}}" ng-checked="todo.status === 'completed'">
-
-                <label for="c-{{todo.id}}" ng-click="todoCompleted(todo)">
-                    <span></span>
-                    <span class="check"></span>
-                    <span class="box"></span>
-                </label>
-            </div>
-
-        </form>
     </div>
 
-    <div class="col-md-10">
-        <div class="view">
+    <div ng-repeat="todo in filteredTodos = (group.items | filter:filterByKeywordText | orderBy: 'updated' : true)"
+         ng-class="{'completed': todo.status == 'completed', editing: todo == editedTodo}"
+         class="row one-task my-repeat-animation">
+
+        <!-- <CHECKBOX COL >-->
+        <div class="col-md-1 check-col">
+            <form role="form">
+                <div class="check-awesome">
+                    <input type="checkbox" id="c-{{todo.id}}" ng-checked="todo.status === 'completed'">
+
+                    <label for="c-{{todo.id}}" ng-click="todoCompleted(todo)">
+                        <span></span>
+                        <span class="check"></span>
+                        <span class="box"></span>
+                    </label>
+                </div>
+            </form>
+        </div>
+        <!-- </CHECKBOX COL >-->
+
+        <!-- <TITLE COL >-->
+        <div class="col-md-10">
+            <div class="view">
             <span ng-dblclick="editTodo(todo)" class="fake-label">
                 <span ng-bind-html="todo.title|highlight:filterByKeywordText:caseSensitive"></span>
             </span>
+            </div>
+
+            <form ng-submit="doneEditing(todo, 'submit')">
+                <input class="edit" ng-trim="false" ng-model="todo.title" todo-escape="revertEdits(todo)"
+                       ng-blur="saveEdits(todo, 'blur')" todo-focus="todo == editedTodo">
+            </form>
         </div>
+        <!-- </TITLE COL >-->
 
-        <form ng-submit="doneEditing(todo, 'submit')">
-            <input class="edit" ng-trim="false" ng-model="todo.title" todo-escape="revertEdits(todo)"
-                   ng-blur="saveEdits(todo, 'blur')" todo-focus="todo == editedTodo">
-        </form>
-
+        <!-- <REMOVE COL >-->
+        <div class="col-md-1 remove-col">
+            <form ng-submit="removeTodo(todo)" role="form">
+                <button class="btn btn-default btn-xs" ng-click="removeTodo(todo)">
+                    <i class="glyphicon glyphicon-remove"></i> Remove
+                </button>
+            </form>
+        </div>
+        <!-- </REMOVE COL >-->
     </div>
-
-
-    <div class="col-md-1 remove-col">
-        <form ng-submit="removeTodo(todo)" role="form">
-
-            <!--<paper-button raised ng-click="removeTodo(todo)">Remove</paper-button>-->
-
-            <button class="btn btn-default btn-xs" ng-click="removeTodo(todo)">
-                <i class="glyphicon glyphicon-remove"></i> Remove
-            </button>
-        </form>
-    </div>
-
 </div>
 
+<!-- <LOADING STATUS> -->
 <div class="row">
     <div class="col-md-12">
-        <!-- <LOADING STATUS> -->
         <div class="text-center" ng-hide="dataLoaded">
 
             <paper-spinner active></paper-spinner>
@@ -89,6 +89,7 @@
             </p>
 
         </div>
-        <!-- </LOADING STATUS> -->
+
     </div>
 </div>
+<!-- </LOADING STATUS> -->

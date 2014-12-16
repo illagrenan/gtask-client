@@ -13,7 +13,6 @@ input[type="search"]::-moz-search-cancel-button {
   -moz-appearance: searchfield-cancel-button;
 }
 
-
 a.selected {
   font-weight: bold;
 }
@@ -68,11 +67,33 @@ a.selected {
 }
 
 .row.completed {
-  span.fake-label {
+  span.fake-label, span.fake-label span {
     text-decoration: line-through;
     color: rgba(0, 0, 0, 0.55);
   }
 }
+
+// Animate
+
+/* Add animation */
+.my-repeat-animation.ng-enter.ng-enter-active,
+.my-repeat-animation.ng-leave {
+  opacity: 1;
+  -webkit-transition: opacity 300ms ease-out;
+  -moz-transition: opacity 300ms ease-out;
+  transition: opacity 300ms ease-out;
+}
+
+/* Remove animation */
+.my-repeat-animation.ng-leave.ng-leave-active,
+.my-repeat-animation.ng-enter {
+  opacity: 0;
+  -webkit-transition: opacity 300ms ease-out;
+  -moz-transition: opacity 300ms ease-out;
+  transition: opacity 300ms ease-out;
+}
+
+// Animate
 
 .one-task {
   //  margin-bottom: 8px;

@@ -1,43 +1,21 @@
-<div id="filters" class="row" ng-cloak ng-show="dataLoaded">
+<div id="filters" ng-cloak>
 
-    <div class="col-sm-2 col-sm-offset-2 text-center">
-      <span id="todo-count"><strong>{{remainingCount}}</strong>
-        <ng-pluralize count="remainingCount" when="{ one: 'item left', other: 'items left' }"></ng-pluralize>
-      </span>
-    </div>
+    <button class="btn btn-sm btn-success"
+            id="clear-completed"
+            ng-click="confirmDeleting()"
+            ng-disabled="completedTodos.items.length <= 0 || !dataLoaded">
+            Clear completed ({{completedTodos.items.length}})
+    </button>
 
-    <div class="col-sm-4 text-center" ng-show="todos.length">
-        <ul class="list-inline">
-            <li>
-                <a class="btn btn-sm" ng-class="{selected: activeFilter == undefined} " href="#/app">All</a>
-            </li>
-            <li>
-                <a class="btn btn-sm" ng-class="{selected: activeFilter == 'active'}"
-                   href="#/app/?filter=active">Active
-                    <span class="badge badge-info">{{remainingCount}}</span></a>
-            </li>
-            <li>
-                <a class="btn btn-sm" ng-class="{selected: activeFilter == 'completed'}"
-                   href="#/app/?filter=completed">Completed</a>
-            </li>
-        </ul>
-    </div>
+    <paper-action-dialog backdrop transition="core-transition-center" id="toggleDialog2"
+                         heading="Are you sure?" layered="false">
 
-    <div class="col-sm-2  text-center">
-        <button class="btn btn-sm btn-success" id="clear-completed" ng-click="confirmDeleting()"
-                ng-show="remainingCount < todos.length">Clear completed ({{todos.length - remainingCount}})
-        </button>
-    </div>
+        <p>
+            Really delete {{completedTodos.items.length}} completed tasks?
+        </p>
+
+        <paper-button affirmative>Cancel</paper-button>
+        <paper-button affirmative autofocus ng-click="clearCompletedTodos()">OK, delete tasks</paper-button>
+
+    </paper-action-dialog>
 </div>
-
-<paper-action-dialog backdrop transition="core-transition-center" id="toggleDialog2"
-                     heading="Are you sure?" layered="false">
-
-    <p>
-        Really delete completed tasks?
-    </p>
-
-    <paper-button affirmative>Cancel</paper-button>
-    <paper-button affirmative autofocus ng-click="clearCompletedTodos()">OK, delete tasks</paper-button>
-
-</paper-action-dialog>

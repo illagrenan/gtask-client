@@ -46,13 +46,14 @@
                         </span>
 
                     <label class="sr-only" for="filter-text">Filter by title</label>
+
                     <input type="search"
                            class="form-control"
                            id="filter-text"
                            placeholder="Filter tasks by typing..."
                            required="required"
                            ng-model="filterByKeywordText"
-                           ng-disabled="todos.length == 0"
+                           ng-disabled="completedTodos.items.length <= 0 && needsActionTodos.items.length <= 0"
                            aria-describedby="helpBlock">
                 </div>
 
@@ -62,6 +63,13 @@
 
             </form>
 
+            <h3>Tools</h3>
+
+            <!--<FILTERS>-->
+            <section id="filter" ng-include="'html/app-partials/filters.html'">
+            </section>
+            <!--</FILTERS>-->
+
         </div>
         <div class="col-md-9">
             <!--<ADD-TD-FORM>-->
@@ -70,13 +78,6 @@
             <!--</ADD-TD-FORM>-->
 
             <br/>
-
-            <div class="clearfix"></div>
-
-            <!--<FILTERS>-->
-            <section id="filter" ng-include="'html/app-partials/filters.html'">
-            </section>
-            <!--</FILTERS>-->
 
             <div class="clearfix"></div>
 

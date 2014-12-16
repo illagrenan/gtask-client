@@ -20,18 +20,37 @@ gTodoControllers.controller(
         'GooglePlus',
         'cfpLoadingBar',
         '$routeParams',
+        '$timeout',
+        'status',
 
-        function TodoCtrl($scope, $location, $filter, todoStorage, GooglePlus, cfpLoadingBar, $routeParams) {
+        function TodoCtrl($scope, $location, $filter, todoStorage, GooglePlus, cfpLoadingBar, $routeParams, $timeout, status) {
             var scope = $scope;
-            var todos = scope.todos = [];
+
+            scope.needsActionTodos = scope.completedTodos = {
+                items: []
+            };
 
 
-            // Initial load of all tasks
             todoStorage.get().then(function (data) {
-                scope.todos = data;
+                // Initial load of all tasks
+
+                scope.needsActionTodos = {
+                    name: "Needs action",
+                    items: $filter('filter')(data, {status: "needsAction"})
+                };
+
+                scope.completedTodos = {
+                    name: "Completed tasks",
+                    items: $filter('filter')(data, {status: "completed"})
+                };
+
+                scope.groups = [
+                    scope.needsActionTodos,
+                    scope.completedTodos
+                ];
+
                 scope.dataLoaded = true;
-                scope.remainingCount = $filter('filter')(scope.todos, {status: "needsAction"}).length;
-                //  cfpLoadingBar.complete();
+                // scope.remainingCount = $filter('filter')(scope.todos, {status: "needsAction"}).length;
             });
 
             scope.$on("google:ready", function () {
@@ -46,8 +65,8 @@ gTodoControllers.controller(
                 $scope.activeFilter = activeFilter;
 
                 $scope.statusFilter = {
-                    'active': {status: "needsAction"},
-                    'completed': {status: "completed"}
+                    'active': {status: status.NEEDS_ACTION_STATUS},
+                    'completed': {status: status.COMPLETED_STATUS}
                 }[activeFilter];
             };
 
@@ -91,12 +110,13 @@ gTodoControllers.controller(
                 todoStorage.insert(
                     {
                         title: newTodo,
-                        notes: "Lorem ipsum",
-                        status: "needsAction"
+                        notes: "",
+                        status: status.NEEDS_ACTION_STATUS
                     }
                 ).then(
                     function (data) {
-                        $scope.todos.push(data);
+                        scope.needsActionTodos.items.push(data);
+
                         addTodoFormScope.dataWorking = false;
                         addTodoFormScope.placeholder = null;
                         addTodoFormScope.focusMe = true;
@@ -140,14 +160,13 @@ gTodoControllers.controller(
 
                 var newStatus;
 
-                if (todo.status === "completed") {
+                if (todo.status === status.COMPLETED_STATUS) {
                     $scope.remainingCount++;
-                    newStatus = "needsAction";
+                    newStatus = status.NEEDS_ACTION_STATUS;
                 } else {
                     $scope.remainingCount--;
-                    newStatus = "completed";
+                    newStatus = status.COMPLETED_STATUS;
                 }
-
 
                 todoStorage.update(
                     todo.id,
@@ -157,6 +176,18 @@ gTodoControllers.controller(
                 ).then(
                     function (data) {
                         todo.status = newStatus;
+
+                        if (newStatus == status.COMPLETED_STATUS) {
+                            $timeout(function () {
+                                scope.needsActionTodos.items.splice(scope.needsActionTodos.items.indexOf(todo), 1);
+                                scope.completedTodos.items.push(todo);
+                            }, 1000);
+                        } else {
+                            $timeout(function () {
+                                scope.completedTodos.items.splice(scope.completedTodos.items.indexOf(todo), 1);
+                                scope.needsActionTodos.items.push(todo);
+                            }, 1000);
+                        }
                     }
                 )
             };
