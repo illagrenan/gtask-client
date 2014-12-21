@@ -11,9 +11,11 @@ var gTodoApp = angular.module('gTodo', [
     'ngRoute',
     'ngAnimate',
 
+    'angularMoment',
     'googleplus',
     'cfp.loadingBar',
     'ui.highlight',
+    'ui.bootstrap',
     'ngSanitize',
     'todo.directives',
     'todo.statuses',

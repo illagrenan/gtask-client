@@ -2,12 +2,12 @@
     <div class="row">
         <div class="col-md-12">
             <!-- <HEADER> -->
-            <header id="header" ng-include="'html/app-partials/header.html'">
+            <header id="header" ng-include="'partials/snippets/header.html'">
             </header>
             <!-- </HEADER> -->
 
             <!-- <DIVIDER> -->
-            <div class="row" ng-include="'html/app-partials/divider.html'">
+            <div class="row" ng-include="'partials/snippets/divider.html'">
             </div>
             <!-- </DIVIDER> -->
         </div>
@@ -18,22 +18,34 @@
 
 
             <h3>
-                Your tasklists
+                <i class="fa fa-list-alt"></i> Your tasklists
             </h3>
-            <core-menu raised>
-                <paper-item>
-                    <strong>@default</strong>
 
+            <div class="text-center" ng-hide="taskListsLoaded">
+
+                <paper-spinner active></paper-spinner>
+
+                <p>
+                    <strong>
+                        Loading tasklists...
+                    </strong>
+                </p>
+
+            </div>
+
+            <core-menu raised ng-show="taskLists" selected="1" selectedAttribute="">
+                <paper-item ng-repeat="oneList in taskLists"
+                            ng-click="loadTaskData(oneList)"
+                            ng-class="{'core-selected' : selectedTaskList == oneList}">
+                    {{oneList.title}}
                 </paper-item>
-                <paper-item>Copy</paper-item>
-                <paper-item>Paste</paper-item>
             </core-menu>
 
             <h3>
                 Task finder
             </h3>
 
-            <form id="filter-form" ng-submit="f()" role="form">
+            <form id="filter-form" role="form">
 
 
                 <div class="input-group">
@@ -53,7 +65,7 @@
                            placeholder="Filter tasks by typing..."
                            required="required"
                            ng-model="filterByKeywordText"
-                           ng-disabled="completedTodos.items.length <= 0 && needsActionTodos.items.length <= 0"
+                           ng-disabled="(completedTodos.items.length <= 0 && needsActionTodos.items.length <= 0) || (!completedTodos.items && !needsActionTodos.items)"
                            aria-describedby="helpBlock">
                 </div>
 
@@ -66,14 +78,14 @@
             <h3>Tools</h3>
 
             <!--<FILTERS>-->
-            <section id="filter" ng-include="'html/app-partials/filters.html'">
+            <section id="filter" ng-include="'partials/snippets/filters.html'">
             </section>
             <!--</FILTERS>-->
 
         </div>
         <div class="col-md-9">
             <!--<ADD-TD-FORM>-->
-            <section id="add-todo-form" ng-include="'html/app-partials/add-todo-form.html'">
+            <section id="add-todo-form" ng-include="'partials/snippets/add-todo-form.html'">
             </section>
             <!--</ADD-TD-FORM>-->
 
@@ -82,17 +94,17 @@
             <div class="clearfix"></div>
 
             <!-- <TASKS SECTION> -->
-            <section id="tasks" ng-include="'html/app-partials/tasks.html'">
+            <section id="tasks" ng-include="'partials/snippets/tasks.html'">
             </section>
             <!-- </TASKS SECTION> -->
 
             <!-- <DIVIDER> -->
-            <div ng-include="'html/app-partials/divider.html'">
+            <div ng-include="'partials/snippets/divider.html'">
             </div>
             <!-- </DIVIDER> -->
 
             <!-- <TOOLS SECTION> -->
-            <section id="tools" ng-show="todos.length" ng-cloak ng-include="'html/app-partials/tools.html'">
+            <section id="tools" ng-show="todos.length" ng-cloak ng-include="'partials/snippets/tools.html'">
             </section>
             <!-- </TOOLS SECTION> -->
         </div>

@@ -1,8 +1,17 @@
+@import "../bower_components/bootstrap/less/variables";
+
 body {
   //  padding-top: 10px;
   font-family: 'Roboto', sans-serif;
   overflow-y: scroll;
   text-rendering: geometricPrecision;
+}
+
+.vendor(@property, @value) {
+  -webkit-@{property}: @value;
+  -khtml-@{property}: @value;
+  -moz-@{property}: @value;
+  @{property}: @value;
 }
 
 input[type="search"]::-webkit-search-cancel-button {
@@ -139,4 +148,30 @@ a.selected {
   p {
     display: table-cell;
   }
+}
+
+.overdue-container {
+
+  font-size: @font-size-small;
+
+  .label {
+    color: #333333;
+    background-color: #FF5722;
+position: relative;
+    top: -2px;
+    text-transform: uppercase;
+
+    .vendor(border-radius, 0px);
+    .vendor(animation-duration, 2s);
+    .vendor(animation-delay, 100ms);
+  }
+
+  .due-container {
+
+  }
+}
+
+.not-overdue-container {
+  color: lighten(@gray-base, 83.5%);;
+  font-size: @font-size-small;
 }

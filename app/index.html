@@ -4,20 +4,21 @@
     <meta charset="utf-8">
     <title>gTodos</title>
 
+    <!-- build:js js/webcomponents.min.js -->
     <!-- Polyfill Web Components support for older browsers -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <!-- endbuild -->
+
     <link href='http://fonts.googleapis.com/css?family=Roboto&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 
-    <!--<link rel="stylesheet" href="bower_components/todomvc-common/base.css">-->
+    <!-- build:css css/gtask-bower-components.min.css -->
     <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css"/>
-    <link rel="stylesheet" href="bower_components/animate.css/animate.css"/>
-    <!--<link href="bower_components/bootstrap-material-design/dist/css/ripples.css" rel="stylesheet">-->
-    <!--<link href="bower_components/bootstrap-material-design/dist/css/material-wfont.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="bower_components/animate-css/animate.css"/>
+    <!-- endbuild -->
 
     <!--<POLYMER ELEMENTS>-->
-    <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
     <link rel="import" href="bower_components/paper-button/paper-button.html">
     <link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
     <link rel="import" href="bower_components/paper-item/paper-item.html">
@@ -25,10 +26,12 @@
     <link rel="import" href="bower_components/paper-dialog/paper-action-dialog.html">
     <!--</POLYMER ELEMENTS>-->
 
+    <!-- build:css css/gtask-main-app.min.css -->
     <link rel="stylesheet" href="css/loading_icon.css"/>
     <link rel="stylesheet" href="css/base.css"/>
     <link rel="stylesheet" href="css/cb.css"/>
     <link rel="stylesheet" href="css/toolbar.css"/>
+    <!-- endbuild -->
 
     <style>
         [ng-cloak] {
@@ -43,7 +46,7 @@
     <div class="container animated fadeInDown">
         <div class="row vertical-align">
             <div class="col-md-1 logo">
-                GTODO
+                GTASKSAPP
             </div>
 
             <div class="col-md-8">
@@ -54,7 +57,7 @@
                 {{userData.name}}
 
                 <img ng-src="{{userData.picture}}"
-                     src="http://placehold.it/100x100"
+                     src="img/avatar_placeholder.png"
                      alt="{{userData.name}}'s profile picture"
                      class="img-circle ng-cloak profile-picture animated fadeIn"/>
             </div>
@@ -68,48 +71,45 @@
     <div ng-view></div>
 </div>
 
+
+<!-- build:js js/bower_components.min.js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/moment/moment.js"></script>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/angular-moment/angular-moment.js"></script>
 <script src="bower_components/ng-polymer-elements/ng-polymer-elements.js"></script>
-<script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/angular-ui-utils/highlight.js"></script>
-<script src="js/directives/todomvc-directives.js"></script>
-
+<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="bower_components/angular-animate/angular-animate.js"></script>
+<!-- endbuild -->
 
-<script src="js/gapi/angular-google-plus.js"></script>
-<script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
-
+<!-- build:js js/gtask.min.js -->
+<!--Main APP file-->
 <script src="js/app.js"></script>
+<!--Google API-->
+<script src="js/gapi/angular-google-plus.js"></script>
 
+<!--Directives-->
+<script src="js/directives/todomvc-directives.js"></script>
+
+<!--Services-->
 <script src="js/services/todo_storage.js"></script>
+<script src="js/services/tasklist_storage.js"></script>
 <script src="js/services/status.js"></script>
+
+<!--Controllers-->
 <script src="js/controllers/controllers.js"></script>
 <script src="js/controllers/toolbar_controller.js"></script>
 <script src="js/controllers/index_controller.js"></script>
 <script src="js/controllers/app_controller.js"></script>
 
-
-<script>
-
-    $(document).on("click", ".check-awesome label", function () {
-        // find the first span which is our circle/bubble
-        var el = $(this).children('span:first-child');
-
-        // add the bubble class (we do this so it doesnt show on page load)
-        el.addClass('cCircle');
-
-        // clone it
-        var newone = el.clone(true);
-
-        // add the cloned version before our original
-        el.before(newone);
-
-        // remove the original so that it is ready to run on next click
-        $("." + el.attr("class") + ":last").remove();
-    });
-</script>
+<!--Animations-->
+<script src="js/other/checkbox-animation.js"></script>
+<!-- endbuild -->
 
 </body>
 </html>

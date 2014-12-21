@@ -1,10 +1,11 @@
-<div ng-repeat="group in groups">
+<div ng-repeat="group in groups" ng-hide="!dataLoaded">
 
     <h2>
         {{ group.name }}
     </h2>
 
-    <div ng-show="filteredTodos.length == 0 && dataLoaded === true" class="no-task-here">
+    <div ng-show="(filteredTodos.length == 0 || group.items.length == 0 || !group.items) && dataLoaded === true"
+         class="no-task-here">
 
         <p>
             <i class="fa fa-check-circle-o fa-3x add-blue"></i>
@@ -13,7 +14,6 @@
                 Great! There are no tasks.
             </strong>
         </p>
-
     </div>
 
     <div ng-repeat="todo in filteredTodos = (group.items | filter:filterByKeywordText | orderBy: 'updated' : true)"
@@ -37,7 +37,7 @@
         <!-- </CHECKBOX COL >-->
 
         <!-- <TITLE COL >-->
-        <div class="col-md-10">
+        <div class="col-md-6">
             <div class="view">
             <span ng-dblclick="editTodo(todo)" class="fake-label">
                 <span ng-bind-html="todo.title|highlight:filterByKeywordText:caseSensitive"></span>
@@ -51,10 +51,29 @@
         </div>
         <!-- </TITLE COL >-->
 
+        <div class="col-md-4 text-right">
+            <span ng-show="todo.due && todo.status == 'needsAction'" class="overdue-container">
+                <span ng-show="isOverdue(todo.due)" class="label label-warning animated bounceIn">
+                <i class="fa fa-exclamation-triangle"></i> Overdue</span>
+                &nbsp;
+                                    <!--{{todo.due| date:'medium'}}-->
+                <span class="due-container" am-time-ago="todo.due"
+                      tooltip="{{todo.due| date:'medium'}}">
+                </span>
+            </span>
+
+            <span ng-show="!todo.due && todo.status == 'needsAction'" class="not-overdue-container">
+                <em>
+                    no due date
+                </em>
+            </span>
+
+        </div>
+
         <!-- <REMOVE COL >-->
         <div class="col-md-1 remove-col">
-            <form ng-submit="removeTodo(todo)" role="form">
-                <button class="btn btn-default btn-xs" ng-click="removeTodo(todo)">
+            <form ng-submit="removeTodo(todo, group)" role="form">
+                <button class="btn btn-default btn-xs" ng-click="removeTodo(todo, group)" title="Delete this task">
                     <i class="glyphicon glyphicon-remove"></i> Remove
                 </button>
             </form>

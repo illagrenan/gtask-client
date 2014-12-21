@@ -17,76 +17,142 @@ gTodoControllers.controller(
         '$location',
         '$filter',
         'todoStorage',
+        'taskListStorage',
         'GooglePlus',
         'cfpLoadingBar',
         '$routeParams',
         '$timeout',
         'status',
 
-        function TodoCtrl($scope, $location, $filter, todoStorage, GooglePlus, cfpLoadingBar, $routeParams, $timeout, status) {
-            var scope = $scope;
+        function TodoCtrl($scope,
+                          $location,
+                          $filter,
+                          todoStorage,
+                          taskListStorage,
+                          GooglePlus,
+                          cfpLoadingBar,
+                          $routeParams,
+                          $timeout,
+                          status) {
 
+            /*
+             * Local variables
+             */
+            var scope = $scope;
+            var dateNow = Date.now();
+            var todosCache = [];
+
+            /*
+             * Scope variables
+             */
+            scope.newTodo = '';
+            scope.editedTodo = null;
             scope.needsActionTodos = scope.completedTodos = {
                 items: []
             };
 
+            /*
+             * Initial functions
+             */
+            taskListStorage.get().then(function (data) {
+                    scope.taskLists = data;
+                    scope.taskListsLoaded = true;
 
-            todoStorage.get().then(function (data) {
-                // Initial load of all tasks
+                    // TODO Check tasklist length
+                    scope.loadTaskData(scope.taskLists[0]);
+                }
+            );
 
-                scope.needsActionTodos = {
-                    name: "Needs action",
-                    items: $filter('filter')(data, {status: "needsAction"})
+            /*
+             * Scope methods
+             */
+            scope.isOverdue = function (dueDate) {
+                if (dueDate === undefined) {
+                    return false;
+                }
+
+                return Date.parse(dueDate) < dateNow;
+            };
+
+            scope.loadTaskData = function (taskList) {
+
+                if (scope.selectedTaskList == taskList) {
+                    return;
+                }
+
+                if (taskList.id in todosCache) {
+
+                    // scope.needsActionTodos = todosCache[taskList.id].na;
+                    // scope.completedTodos = todosCache[taskList.id].ct;
+
+                    console.info("Loaded from cache");
+
+                    scope.groups = todosCache[taskList.id].groups;
+
+                    scope.selectedTaskList = taskList;
+                    return;
+                }
+
+                scope.dataLoaded = false;
+
+                scope.needsActionTodos = scope.completedTodos = {
+                    items: []
                 };
 
-                scope.completedTodos = {
-                    name: "Completed tasks",
-                    items: $filter('filter')(data, {status: "completed"})
-                };
+                todoStorage.get(taskList.id).then(function (data) {
+                    scope.needsActionTodos = {
+                        name: "Needs action",
+                        items: $filter('filter')(data, {status: status.NEEDS_ACTION_STATUS})
+                    };
 
-                scope.groups = [
-                    scope.needsActionTodos,
-                    scope.completedTodos
-                ];
+                    scope.completedTodos = {
+                        name: "Completed tasks",
+                        items: $filter('filter')(data, {status: status.COMPLETED_STATUS})
+                    };
 
-                scope.dataLoaded = true;
-                // scope.remainingCount = $filter('filter')(scope.todos, {status: "needsAction"}).length;
-            });
+                    var gggTodo = [
+                        scope.needsActionTodos,
+                        scope.completedTodos
+                    ];
 
-            scope.$on("google:ready", function () {
-                // cfpLoadingBar.start();
-            });
+                    scope.groups = gggTodo;
 
-            scope.newTodo = '';
-            scope.editedTodo = null;
+                    todosCache[taskList.id] = {
+                        groups: gggTodo
+                    };
 
-            $scope.setFilter = function () {
+                    scope.dataLoaded = true;
+                    scope.selectedTaskList = taskList;
+                });
+            };
+
+            scope.setFilter = function () {
                 var activeFilter = $location.search().filter;
-                $scope.activeFilter = activeFilter;
+                scope.activeFilter = activeFilter;
 
-                $scope.statusFilter = {
+                scope.statusFilter = {
                     'active': {status: status.NEEDS_ACTION_STATUS},
                     'completed': {status: status.COMPLETED_STATUS}
                 }[activeFilter];
             };
 
-            $scope.revertEdits = function (todo) {
-                todos[todos.indexOf(todo)] = $scope.originalTodo;
-                $scope.editedTodo = null;
-                $scope.originalTodo = null;
-                $scope.reverted = true;
-            };
+            //$scope.revertEdits = function (todo) {
+            //    todos[todos.indexOf(todo)] = $scope.originalTodo;
+            //    $scope.editedTodo = null;
+            //    $scope.originalTodo = null;
+            //    $scope.reverted = true;
+            //};
 
-            $scope.$on('$routeUpdate', function () {
+            scope.$on('$routeUpdate', function () {
                 console.debug("$routeUpdate", "Setting filter");
-                $scope.setFilter();
+                scope.setFilter();
             });
 
 
             scope.$watch('location.path()', function (path) {
                 // Only on initial load
                 console.debug("location.path()", "Setting filter");
-                $scope.setFilter();
+                scope.setFilter();
             });
 
             scope.$watch('remainingCount == 0', function (val) {
@@ -150,10 +216,10 @@ gTodoControllers.controller(
                 $scope.doneEditing($scope.originalTodo);
             };
 
-            scope.removeTodo = function (todo) {
-                $scope.remainingCount -= todo.completed ? 0 : 1;
-                todos.splice(todos.indexOf(todo), 1);
-                todoStorage.put(todos);
+            scope.removeTodo = function (todo, group) {
+                // $scope.remainingCount -= todo.completed ? 0 : 1;
+                group.items.splice(group.items.indexOf(todo), 1);
+                todoStorage.remove(todo);
             };
 
             scope.todoCompleted = function (todo) {
@@ -193,7 +259,6 @@ gTodoControllers.controller(
             };
 
             scope.clearCompletedTodos = function () {
-
                 //$scope.todos = todos = todos.filter(function (val) {
                 //    return true;
                 //    // return !val.completed;

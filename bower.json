@@ -18,16 +18,18 @@
     "angular-sanitize": "~1.3.6",
     "polymer-polymer": "~0.5.2",
     "polymer": "Polymer/polymer#~0.5.2",
-    "paper-checkbox": "Polymer/paper-checkbox#~0.5.2",
     "ng-polymer-elements": "~0.2.0",
     "paper-button": "Polymer/paper-button#~0.5.2",
-    "animate.css": "~3.2.0",
     "paper-spinner": "Polymer/paper-spinner#~0.5.2",
     "paper-item": "Polymer/paper-item#~0.5.2",
     "paper-dialog": "Polymer/paper-dialog#~0.5.2",
-    "webcomponentsjs": "*"
+    "webcomponentsjs": "*",
+    "angular-moment": "~0.8.3",
+    "angular-bootstrap": "~0.12.0",
+    "animate-css": "~3.2.0",
+    "angular-animate": "~1.3.8"
   },
   "resolutions": {
-    "angular": "~1.3.6"
+    "angular": "~1.3.0"
   }
 }

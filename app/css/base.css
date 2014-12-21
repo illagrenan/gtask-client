@@ -88,3 +88,29 @@ a.selected {
 .no-task-here p {
   display: table-cell;
 }
+.overdue-container {
+  font-size: 12px;
+}
+.overdue-container .label {
+  color: #333333;
+  background-color: #FF5722;
+  position: relative;
+  top: -2px;
+  text-transform: uppercase;
+  -webkit-border-radius: 0px;
+  -khtml-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  -webkit-animation-duration: 2s;
+  -khtml-animation-duration: 2s;
+  -moz-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-delay: 100ms;
+  -khtml-animation-delay: 100ms;
+  -moz-animation-delay: 100ms;
+  animation-delay: 100ms;
+}
+.not-overdue-container {
+  color: #d5d5d5;
+  font-size: 12px;
+}

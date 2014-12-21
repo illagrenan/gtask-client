@@ -15,7 +15,6 @@ var google_plus_module = angular.module('googleplus', []);
  * Initialize async Google API and return its promise.
  */
 google_plus_module.service("initializeGoogleApi", function ($q, $rootScope) {
-    console.info("Initializing Google API.")
 
     var deferedGoogleApi = $q.defer();
 
@@ -23,7 +22,7 @@ google_plus_module.service("initializeGoogleApi", function ($q, $rootScope) {
     window._googleApiLoaded = function () {
         gapi.auth.init(function () {
             $rootScope.$broadcast("google:loaded", {});
-            console.info("Google API client library has been loaded.");
+            console.debug("Google API client library has been loaded.");
             deferedGoogleApi.resolve(gapi);
         });
     };
@@ -44,15 +43,11 @@ google_plus_module.service("authorizedApi", function (initializeGoogleApi, Googl
 
     var authorizedApiDefered = $q.defer()
 
-    console.log("Authorizing");
-
     initializeGoogleApi.then(function (resolvedApi) {
-
-        console.log("Checking auth");
 
         GooglePlus.checkAuth().then(function (authResult) {
             authorizedApiDefered.resolve(resolvedApi);
-            console.log("Authorized api = ", authResult);
+            console.debug("Google API is authorized");
         })
     });
 
@@ -147,8 +142,6 @@ google_plus_module.provider('GooglePlus', [function () {
 
         NgGooglePlus.prototype.checkAuth = function () {
 
-            console.log("NgGooglePlus.prototype.checkAuth");
-
             gapi.auth.authorize({
                 client_id: options.clientId,
                 scope: options.scopes,
@@ -203,7 +196,7 @@ google_plus_module.provider('GooglePlus', [function () {
     // Initialization of module
     .run(function ($rootScope, $window, $q, initializeGoogleApi) {
         initializeGoogleApi.then(function (resolvedGoogleApi) {
-            console.info("Google API has been resolved", resolvedGoogleApi);
+            console.debug("Google API has been resolved");
             $rootScope.$broadcast("google:ready", {});
         })
     });
