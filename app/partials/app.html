@@ -34,9 +34,13 @@
             </div>
 
             <core-menu raised ng-show="taskLists" selected="1" selectedAttribute="">
+                <!--
+                TODO Ripple effect is disabled (see "noink" attribute). Ripple effect freezes UI. For more information follow this link: https://github.com/Polymer/paper-ripple/issues/10
+                -->
                 <paper-item ng-repeat="oneList in taskLists"
                             ng-click="loadTaskData(oneList)"
-                            ng-class="{'core-selected' : selectedTaskList == oneList}">
+                            ng-class="{'core-selected' : selectedTaskList == oneList}"
+                            noink>
                     {{oneList.title}}
                 </paper-item>
             </core-menu>

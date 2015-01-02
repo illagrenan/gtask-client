@@ -6,6 +6,8 @@
 gTodoApp.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope) {
     var STORAGE_ID = 'todos-angularjs-perf';
 
+    var todosCache = [];
+
     return {
         get: function (tasklist) {
 
@@ -15,17 +17,20 @@ gTodoApp.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope
                 tasklist = "@default";
             }
 
-            authorizedApi.then(function (authorizedApi) {
-
-                gapi.client.load('tasks', 'v1', function () {
-                    gapi.client.tasks.tasks.list({'tasklist': tasklist}).execute(function (resp) {
-                            dataDeferred.resolve(resp.items);
-                            $rootScope.$apply();
-                        }
-                    )
+            if (tasklist in todosCache) {
+                dataDeferred.resolve(todosCache[tasklist]);
+            } else {
+                authorizedApi.then(function (authorizedApi) {
+                    gapi.client.load('tasks', 'v1', function () {
+                        gapi.client.tasks.tasks.list({'tasklist': tasklist}).execute(function (resp) {
+                                todosCache[tasklist] = resp.items;
+                                dataDeferred.resolve(resp.items);
+                                $rootScope.$apply();
+                            }
+                        )
+                    });
                 });
-            });
-
+            };
 
             return dataDeferred.promise;
         },

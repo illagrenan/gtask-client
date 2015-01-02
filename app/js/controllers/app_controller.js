@@ -40,6 +40,8 @@ gTodoControllers.controller(
              */
             var scope = $scope;
             var dateNow = Date.now();
+
+            // TODO Unused variable
             var todosCache = [];
 
             /*
@@ -77,66 +79,40 @@ gTodoControllers.controller(
             scope.loadTaskData = function (taskList) {
 
                 if (scope.selectedTaskList == taskList) {
+                    // Do not refresh already selected tasklist
                     return;
                 }
 
+                scope.dataLoaded = false;
 
-                if (taskList.id in todosCache) {
+                scope.needsActionTodos = scope.completedTodos = {
+                    items: []
+                };
 
-                    console.log("Cache hit");
-                    var cachedData = todosCache[taskList.id];
-
+                todoStorage.get(taskList.id).then(function (data) {
                     scope.needsActionTodos = {
                         name: "Needs action",
-                        items: $filter('filter')(cachedData, {status: status.NEEDS_ACTION_STATUS})
+                        items: $filter('filter')(data, {status: status.NEEDS_ACTION_STATUS})
                     };
 
                     scope.completedTodos = {
                         name: "Completed tasks",
-                        items: $filter('filter')(cachedData, {status: status.COMPLETED_STATUS})
+                        items: $filter('filter')(data, {status: status.COMPLETED_STATUS})
                     };
 
-
-                    scope.groups = [
+                    var gggTodo = [
                         scope.needsActionTodos,
                         scope.completedTodos
                     ];
 
+                    scope.groups = gggTodo;
+
+                    todosCache[taskList.id] = data;
+
                     scope.dataLoaded = true;
                     scope.selectedTaskList = taskList;
+                });
 
-                } else {
-
-                    scope.dataLoaded = false;
-
-                    scope.needsActionTodos = scope.completedTodos = {
-                        items: []
-                    };
-
-                    todoStorage.get(taskList.id).then(function (data) {
-                        scope.needsActionTodos = {
-                            name: "Needs action",
-                            items: $filter('filter')(data, {status: status.NEEDS_ACTION_STATUS})
-                        };
-
-                        scope.completedTodos = {
-                            name: "Completed tasks",
-                            items: $filter('filter')(data, {status: status.COMPLETED_STATUS})
-                        };
-
-                        var gggTodo = [
-                            scope.needsActionTodos,
-                            scope.completedTodos
-                        ];
-
-                        scope.groups = gggTodo;
-
-                        todosCache[taskList.id] = data;
-
-                        scope.dataLoaded = true;
-                        scope.selectedTaskList = taskList;
-                    });
-                }
             };
 
             scope.setFilter = function () {
