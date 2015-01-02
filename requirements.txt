@@ -1,0 +1,3 @@
+Fabric
+configparser
+-e git+https://github.com/illagrenan/python-zip-dir#egg=zip_dir

@@ -55,6 +55,8 @@ gTodoApp.config(['$routeProvider',
 
 gTodoApp.run(['$rootScope', function ($rootScope) {
     $rootScope.IS_DEBUG = false;
+
+
 }]);
 
 //.config(function (googleLoginProvider) {
