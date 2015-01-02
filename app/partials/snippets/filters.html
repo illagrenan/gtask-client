@@ -4,7 +4,7 @@
             id="clear-completed"
             ng-click="confirmDeleting()"
             ng-disabled="completedTodos.items.length <= 0 || !dataLoaded">
-            Clear completed ({{completedTodos.items.length}})
+        Clear completed ({{completedTodos.items.length}})
     </button>
 
     <paper-action-dialog backdrop transition="core-transition-center" id="toggleDialog2"
@@ -12,6 +12,10 @@
 
         <p>
             Really delete {{completedTodos.items.length}} completed tasks?
+            <br/>
+            <strong>
+                <i class="fa fa-exclamation-triangle"></i> This functionality is currently not working. Sorry for that.
+            </strong>
         </p>
 
         <paper-button affirmative>Cancel</paper-button>
