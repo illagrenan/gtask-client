@@ -1,3 +1,5 @@
+@import "variables";
+
 #toolbar {
   width: 100%;
   background-color: #4285F4;
@@ -25,12 +27,16 @@
   .user-info {
     display: table-cell;
     color: white;
-    font-family: 'Roboto', sans-serif;
+    font-family: @roboto_font_family;
   }
 
   .logo {
-    font-family: 'Roboto', sans-serif;
+    font-family: @roboto_font_family;
     color: white;
+
+    .text-muted {
+      color: #000000;
+    }
   }
 
 }
@@ -45,6 +51,4 @@
   display: flex;
   align-items: center; /* Align the flex-items vertically */
   justify-content: center;
-  /* Optional, to align inner flex-items
-                               horizontally within the column  */
 }

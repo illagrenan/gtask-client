@@ -1,8 +1,9 @@
 @import "../bower_components/bootstrap/less/variables";
+@import "variables";
 
 body {
   //  padding-top: 10px;
-  font-family: 'Roboto', sans-serif;
+  font-family: @roboto_font_family;
   overflow-y: scroll;
   text-rendering: geometricPrecision;
 }
@@ -157,7 +158,7 @@ a.selected {
   .label {
     color: #333333;
     background-color: #FF5722;
-position: relative;
+    position: relative;
     top: -2px;
     text-transform: uppercase;
 
