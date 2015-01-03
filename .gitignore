@@ -7,3 +7,4 @@ tmp
 /.tmp
 /deploy.ini
 /dist.zip
+/*.pyc
