@@ -1,0 +1,44 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+body {
+   /*padding-top: 50px;*/
+   /*padding-bottom: 20px;*/
+}
+
+h1, h2, h3 {
+   font-family: 'Roboto Slab', serif;
+}
+
+footer {
+   background-color: white;
+}
+
+.btn small {
+   font-size: 8pt;
+}
+
+footer .container {
+   padding: 10px 0 10px 0;
+}
+
+footer .container p {
+   margin: 10px 0 10px 0;
+   font-family: 'Roboto Slab', serif;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
