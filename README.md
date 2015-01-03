@@ -1,6 +1,13 @@
 # GTasks Client #
 
-**Homepage: [https://www.gtasksapp.com/](https://www.gtasksapp.com/ "GTasks Client Homepage")**
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+
+
+- **Homepage: [https://www.gtasksapp.com/](https://www.gtasksapp.com/ "GTasks Client Homepage")**
+- Qualys SSL Report (**A+**): [https://www.ssllabs.com/ssltest/analyze.html?d=gtasksapp.com](https://www.ssllabs.com/ssltest/analyze.html?d=gtasksapp.com)
+
+
+:warning: **This application is in alpha version (January 2015). I'm actively working on it.**
 
 ## Build ##
 
