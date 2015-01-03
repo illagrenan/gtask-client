@@ -122,3 +122,7 @@ paper-toast {
   right: 10px;
   left: auto;
 }
+footer {
+  padding: 10px 0 20px 0;
+  font-size: 12px;
+}
