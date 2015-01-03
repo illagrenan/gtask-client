@@ -17,10 +17,7 @@
 3) Create `deploy.ini`.
 
 ```
-│	.bowerrc
-│	.gitignore
-│	.jshintrc
-│	.travis.yml
+│	...
 │	bower.json
 │	deploy.ini
 |	^^^^^^^^^^

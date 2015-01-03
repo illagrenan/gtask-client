@@ -6,3 +6,4 @@ tmp
 /dist
 /.tmp
 /deploy.ini
+/dist.zip

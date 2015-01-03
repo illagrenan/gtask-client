@@ -18,6 +18,7 @@ module.exports = function (grunt) {
                 src: [
                     'index.html',
                     'img/**',
+                    'favicons/**',
                     'bower_components/paper-*/*.{css,js,html}',
                     'bower_components/core-*/*.{css,js,html}',
                     'bower_components/polymer/*.{css,js,html}'
