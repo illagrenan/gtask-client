@@ -18,7 +18,7 @@
 
     <div ng-repeat="todo in filteredTodos = (group.items | filter:filterByKeywordText | orderBy: 'updated' : true)"
          ng-class="{'completed': todo.status == 'completed', editing: todo == editedTodo}"
-         class="row one-task editing">
+         class="row one-task">
 
         <!-- <CHECKBOX COL >-->
         <div class="col-md-1 check-col">

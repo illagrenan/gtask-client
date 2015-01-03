@@ -194,13 +194,24 @@ gTodoControllers.controller(
 
             scope.doneEditing = function (todo) {
                 $scope.editedTodo = null;
+
+                console.log("Editing todo");
+
                 todo.title = todo.title.trim();
 
-                if (!todo.title) {
-                    $scope.removeTodo(todo);
-                }
+                todoStorage.update(
+                    todo.id,
+                    {
+                        'title': todo.title
+                    }
+                )
 
-                todoStorage.put(todos);
+                // TODO Reconsider!
+                //if (!todo.title) {
+                //    $scope.removeTodo(todo);
+                //}
+
+                // todoStorage.put(todos);
             };
 
             scope.revertEditing = function (todo) {
