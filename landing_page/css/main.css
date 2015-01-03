@@ -17,8 +17,12 @@ footer {
    background-color: white;
 }
 
-.btn small {
+.jumbotron .btn small {
    font-size: 8pt;
+}
+
+.jumbotron h1 small {
+   font-size: 20pt;
 }
 
 footer .container {
