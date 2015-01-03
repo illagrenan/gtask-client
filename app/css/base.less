@@ -31,34 +31,41 @@ a.selected {
   background: yellow;
 }
 
-.editing .view {
+// =============
+// Edit task
+// =============
+
+.edit-input {
   display: none;
+
+  width: 100%;
 }
 
-.edit {
-  display: none;
-}
+// When user double clicks on one task...
+.editing {
+  .view {
+    display: none;
+  }
 
-.editing .edit {
-  display: block;
+  .edit-input {
+    display: block;
+  }
 }
 
 // =============
 // Tasks view
 // =============
 
-@bb : #4285F4;
-
 .add-blue {
-  color: @bb;
+  color: @material_blue_color;
 }
 
 .btn-blue-success {
-  background-color: @bb;
-  border-color: @bb;
+  background-color: @material_blue_color;
+  border-color: @material_blue_color;
 
   &:hover {
-    @hover_color : lighten(@bb, 5%);
+    @hover_color : lighten(@material_blue_color, 5%);
 
     background-color: @hover_color;
     border-color: @hover_color;
@@ -85,6 +92,7 @@ a.selected {
 
 // Animate
 
+// TODO Remove my-repeat... - not needed
 /* Add animation */
 .my-repeat-animation.ng-enter.ng-enter-active,
 .my-repeat-animation.ng-leave {
@@ -175,4 +183,10 @@ a.selected {
 .not-overdue-container {
   color: lighten(@gray-base, 83.5%);;
   font-size: @font-size-small;
+}
+
+// To position the toast to the right:
+paper-toast {
+  right: 10px;
+  left: auto;
 }

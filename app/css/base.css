@@ -16,13 +16,14 @@ a.selected {
 .ui-match {
   background: yellow;
 }
+.edit-input {
+  display: none;
+  width: 100%;
+}
 .editing .view {
   display: none;
 }
-.edit {
-  display: none;
-}
-.editing .edit {
+.editing .edit-input {
   display: block;
 }
 .add-blue {
@@ -114,4 +115,8 @@ a.selected {
 .not-overdue-container {
   color: #d5d5d5;
   font-size: 12px;
+}
+paper-toast {
+  right: 10px;
+  left: auto;
 }

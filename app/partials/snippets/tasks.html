@@ -18,7 +18,7 @@
 
     <div ng-repeat="todo in filteredTodos = (group.items | filter:filterByKeywordText | orderBy: 'updated' : true)"
          ng-class="{'completed': todo.status == 'completed', editing: todo == editedTodo}"
-         class="row one-task my-repeat-animation">
+         class="row one-task editing">
 
         <!-- <CHECKBOX COL >-->
         <div class="col-md-1 check-col">
@@ -39,14 +39,18 @@
         <!-- <TITLE COL >-->
         <div class="col-md-6">
             <div class="view">
-            <span ng-dblclick="editTodo(todo)" class="fake-label">
+            <span ng-dblclick="editTodo(todo, group)" class="fake-label">
                 <span ng-bind-html="todo.title|highlight:filterByKeywordText:caseSensitive"></span>
             </span>
             </div>
 
             <form ng-submit="doneEditing(todo, 'submit')">
-                <input class="edit" ng-trim="false" ng-model="todo.title" todo-escape="revertEdits(todo)"
-                       ng-blur="saveEdits(todo, 'blur')" todo-focus="todo == editedTodo">
+                <input class="edit-input form-control"
+                       ng-trim="false"
+                       ng-model="todo.title"
+                       todo-escape="revertEdits(todo)"
+                       ng-blur="saveEdits(todo, 'blur')"
+                       todo-focus="todo == editedTodo">
             </form>
         </div>
         <!-- </TITLE COL >-->
@@ -112,3 +116,5 @@
     </div>
 </div>
 <!-- </LOADING STATUS> -->
+
+<paper-toast text="Your draft has been discarded." onclick="discardDraft(el)" id="toast"></paper-toast>

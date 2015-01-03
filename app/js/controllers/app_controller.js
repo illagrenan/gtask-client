@@ -41,9 +41,6 @@ gTodoControllers.controller(
             var scope = $scope;
             var dateNow = Date.now();
 
-            // TODO Unused variable
-            var todosCache = [];
-
             /*
              * Scope variables
              */
@@ -60,7 +57,7 @@ gTodoControllers.controller(
                     scope.taskLists = data;
                     scope.taskListsLoaded = true;
 
-                    // TODO Check tasklist length
+                    // TODO Check tasklist length.
                     scope.loadTaskData(scope.taskLists[0]);
                 }
             );
@@ -100,14 +97,11 @@ gTodoControllers.controller(
                         items: $filter('filter')(data, {status: status.COMPLETED_STATUS})
                     };
 
-                    var gggTodo = [
+
+                    scope.groups = [
                         scope.needsActionTodos,
                         scope.completedTodos
                     ];
-
-                    scope.groups = gggTodo;
-
-                    todosCache[taskList.id] = data;
 
                     scope.dataLoaded = true;
                     scope.selectedTaskList = taskList;
@@ -125,12 +119,13 @@ gTodoControllers.controller(
                 }[activeFilter];
             };
 
-            //$scope.revertEdits = function (todo) {
-            //    todos[todos.indexOf(todo)] = $scope.originalTodo;
-            //    $scope.editedTodo = null;
-            //    $scope.originalTodo = null;
-            //    $scope.reverted = true;
-            //};
+            $scope.revertEdits = function (todo) {
+                scope.needsActionTodos.items[scope.needsActionTodos.items.indexOf(todo)] = $scope.originalTodo;
+
+                $scope.editedTodo = null;
+                $scope.originalTodo = null;
+                $scope.reverted = true;
+            };
 
             scope.$on('$routeUpdate', function () {
                 console.debug("$routeUpdate", "Setting filter");
@@ -182,8 +177,16 @@ gTodoControllers.controller(
                 $scope.remainingCount++;
             };
 
-            scope.editTodo = function (todo) {
-                // alert("haha");
+            scope.editTodo = function (todo, group) {
+                if (group.name == scope.completedTodos.name) {
+                    // Editing completed todos is disabled
+                    // TODO Show some hint to user
+
+                    // document.getElementById("toast").toggle();
+
+                    return false;
+                }
+
                 $scope.editedTodo = todo;
                 // Clone the original todo to restore it on demand.
                 $scope.originalTodo = angular.extend({}, todo);
