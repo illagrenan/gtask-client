@@ -16,6 +16,9 @@ a.selected {
 .ui-match {
   background: yellow;
 }
+.tooltip {
+  width: 180px;
+}
 .edit-input {
   display: none;
   width: 100%;

@@ -120,6 +120,9 @@ gTodoControllers.controller(
             };
 
             $scope.revertEdits = function (todo) {
+
+                document.getElementById("toast").toggle();
+
                 scope.needsActionTodos.items[scope.needsActionTodos.items.indexOf(todo)] = $scope.originalTodo;
 
                 $scope.editedTodo = null;
@@ -182,8 +185,6 @@ gTodoControllers.controller(
                     // Editing completed todos is disabled
                     // TODO Show some hint to user
 
-                    // document.getElementById("toast").toggle();
-
                     return false;
                 }
 
@@ -194,8 +195,6 @@ gTodoControllers.controller(
 
             scope.doneEditing = function (todo) {
                 $scope.editedTodo = null;
-
-                console.log("Editing todo");
 
                 todo.title = todo.title.trim();
 
@@ -215,6 +214,9 @@ gTodoControllers.controller(
             };
 
             scope.revertEditing = function (todo) {
+
+                throw "Deprecated";
+
                 todos[todos.indexOf(todo)] = $scope.originalTodo;
                 $scope.doneEditing($scope.originalTodo);
             };
