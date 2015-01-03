@@ -1,11 +1,7 @@
+/*global gapi */
 'use strict';
 
-/**
- * Services that persists and retrieves TODOs from localStorage
- */
 gTodoApp.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope) {
-    var STORAGE_ID = 'todos-angularjs-perf';
-
     var todosCache = [];
 
     return {
@@ -23,21 +19,22 @@ gTodoApp.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope
                 authorizedApi.then(function (authorizedApi) {
                     gapi.client.load('tasks', 'v1', function () {
                         gapi.client.tasks.tasks.list({'tasklist': tasklist}).execute(function (resp) {
-                                todosCache[tasklist] = resp.items;
+                                // TODO Fix updating cache
+                                // todosCache[tasklist] = resp.items;
                                 dataDeferred.resolve(resp.items);
                                 $rootScope.$apply();
                             }
                         )
                     });
                 });
-            };
+            }
 
             return dataDeferred.promise;
         },
 
         insert: function (task) {
 
-            var dataDeferred = $q.defer()
+            var dataDeferred = $q.defer();
             var data = angular.extend({'tasklist': '@default'}, task);
 
             authorizedApi.then(function (authorizedApi) {
@@ -55,7 +52,8 @@ gTodoApp.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope
 
         update: function (taskIdentifier, updatedData) {
 
-            var dataDeferred = $q.defer()
+            var dataDeferred = $q.defer();
+
             var data = angular.extend({'tasklist': '@default', 'task': taskIdentifier}, angular.extend(updatedData, {
                 // Thx to http://stackoverflow.com/a/8674004/752142
                 'id': taskIdentifier
@@ -75,21 +73,16 @@ gTodoApp.factory('todoStorage', function ($q, $window, authorizedApi, $rootScope
         },
 
         remove: function (todo) {
-
             var data = {
                 tasklist: "@default",
                 task: todo.id
-            }
+            };
 
             authorizedApi.then(function (authorizedApi) {
                 authorizedApi.client.load('tasks', 'v1', function () {
                     authorizedApi.client.tasks.tasks.delete(data).execute()
                 });
             });
-        },
-
-        put: function (todos) {
-            localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
         }
     };
 });
